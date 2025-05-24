@@ -2,451 +2,170 @@
 <html lang="ar">
 
 <head>
-    <meta charset="utf-8">
-    <title>Arabic Keyboard</title>
-
+    <meta charset="UTF-8">
+    <title>Arabic Virtual Keyboard</title>
     <style>
-        body {
-            direction: rtl;
-            text-align: center;
-            background-color: #1E1E1E;
-        }
-        
-        .button {
-            text-decoration: none;
-            cursor: pointer;
-            padding: 0.1em 0.25em;
-            min-width: 1.4em;
-            font-size: 1.7em;
-            color: #FFF;
-            font-family: 'Droid Arabic Kufi', 'Noto Kufi Arabic', Cairo;
-            background-color: #707070;
-            border-color: #444444;
-            border-radius: 7px;
-            border-width: 2px;
-        }
-        
-        .button-small {
-            text-decoration: none;
-            cursor: pointer;
-            padding: 0.1em 0em;
-            min-width: 1em;
-            font-size: 1.7em;
-            color: #FFF;
-            font-family: 'Droid Arabic Kufi', 'Noto Kufi Arabic', Cairo;
-            background-color: #707070;
-            border-color: #444444;
-            border-radius: 7px;
-            border-width: 2px;
-        }
-        
-        .frame {
-            width: 90%;
-            height: 600px;
-            font-size: 1.1em;
-            color: #fff;
-            font-family: 'Droid Arabic Kufi', 'Noto Kufi Arabic', Cairo;
-            direction: rtl;
-            padding: 0.3em;
-            background-color: #707070;
-            border-color: #444444;
-            border-radius: 10px;
-            outline: none !important;
-            border-width: 8px;
-        }
-        
-        .tab {
-            padding-left: 1.5em;
-        }
-        
-        .key {
-            display: inline-block;
-            padding-bottom: 1em;
-            text-align: center;
-            font-family: Arial, Calibri;
-            color: #d0d0d0;
-        }
-        
-        .key p {
-            margin: 0.15em 0 0.15em 0;
-        }
-        
-        #keys {
-            display: none;
-        }
+    body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: Cairo, sans-serif;
+        direction: rtl;
+        background: #1E1E1E;
+    }
+
+    textarea {
+        width: 90%;
+        height: 420px;
+        padding: 15px;
+        margin-top: 25px;
+        font-size: 20px;
+        font-weight: 600;
+        font-family: inherit;
+        direction: rtl;
+        color: #eaeaea;
+        border: 6px solid #444;
+        border-radius: 8px;
+        outline: none;
+        background-color: #707070;
+    }
+
+    #keyboard {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: end;
+        margin: 30px 5vw;
+    }
+
+    #keyboard .break {
+        flex-basis: 100%;
+    }
+
+    .key {
+        text-align: center;
+        color: #eaeaea;
+    }
+
+    .key > .button,
+    .key > .button-small {
+        font-size: 20px;
+        font-family: inherit;
+        color: inherit;
+        font-weight: bold;
+        border: 2px solid #444;
+        border-radius: 5px;
+        background: #707070;
+        cursor: pointer;
+        width: 40px;
+        height: 50px;
+        margin-inline: 5px;
+    }
+
+    .key > .button-small {
+        font-size: 25px;
+        width: 25px;
+    }   
     </style>
-
-    <script>
-        function alpha(item) {
-            const input = getTextArea();
-            if (document.selection && input.createTextRange) {
-                input.focus();
-                const range = document.selection.createRange();
-                range.text = item;
-                range.select();
-            } else if (typeof input.selectionStart === 'number') {
-                const startPos = input.selectionStart;
-                const endPos = input.selectionEnd;
-                const scrollTop = input.scrollTop;
-                input.value = input.value.substring(0, startPos) + item + input.value.substring(endPos);
-                const cursorPos = startPos + item.length;
-                input.focus();
-                input.selectionStart = cursorPos;
-                input.selectionEnd = cursorPos;
-                input.scrollTop = scrollTop;
-            } else {
-                input.value += item;
-                input.focus();
-            }
-        }
-
-        var character;
-
-        function convert() {
-            character = document.text.field.value;
-            character = character.replace(/==a/g, "ً");
-            character = character.replace(/==i/g, "ٍ");
-            character = character.replace(/==u/g, "ٌ");
-            character = character.replace(/=a/g, "َ");
-            character = character.replace(/=i/g, "ِ");
-            character = character.replace(/=u/g, "ُ");
-            character = character.replace(/=w/g, "ّ");
-            character = character.replace(/=o/g, "ْ");
-
-            character = character.replace(/b/g, "ب");
-            character = character.replace(/ب'/g, "پ");
-            character = character.replace(/p/g, "پ");
-            character = character.replace(/پ'/g, "ب");
-            character = character.replace(/t/g, "ت");
-            character = character.replace(/ت'/g, "ث");
-            character = character.replace(/ث'/g, "ت");
-            character = character.replace(/ṯ/g, "ث");
-            character = character.replace(/j/g, "ج");
-            character = character.replace(/ج'/g, "چ");
-            character = character.replace(/c/g, "چ");
-            character = character.replace(/چ'/g, "ح");
-            character = character.replace(/H/g, "ح");
-            character = character.replace(/ح'/g, "خ");
-            character = character.replace(/K/g, "خ");
-            character = character.replace(/خ'/g, "ج");
-            character = character.replace(/d/g, "د");
-            character = character.replace(/د'/g, "ذ");
-            character = character.replace(/ذ'/g, "د");
-            character = character.replace(/ḏ/g, "ذ");
-            character = character.replace(/r/g, "ر");
-            character = character.replace(/ر'/g, "ز");
-            character = character.replace(/ز'/g, "ر");
-            character = character.replace(/z/g, "ز");
-            character = character.replace(/s/g, "س");
-            character = character.replace(/س'/g, "ش");
-            character = character.replace(/ش'/g, "س");
-            character = character.replace(/š/g, "ش");
-            character = character.replace(/S/g, "ص");
-            character = character.replace(/ص'/g, "ض");
-            character = character.replace(/ض'/g, "ص");
-            character = character.replace(/D/g, "ض");
-            character = character.replace(/T/g, "ط");
-            character = character.replace(/ط'/g, "ظ");
-            character = character.replace(/ظ'/g, "ط");
-            character = character.replace(/Z/g, "ظ");
-            character = character.replace(/g/g, "ع");
-            character = character.replace(/ع'/g, "غ");
-            character = character.replace(/R/g, "غ");
-            character = character.replace(/غ'/g, "ع");
-            character = character.replace(/ġ/g, "غ");
-            character = character.replace(/f/g, "ف");
-            character = character.replace(/ف'/g, "ق");
-            character = character.replace(/ڤ'/g, "ف");
-            character = character.replace(/v/g, "ڢ");
-            character = character.replace(/q/g, "ق");
-            character = character.replace(/ق'/g, "ڤ");
-            character = character.replace(/k/g, "ك");
-            character = character.replace(/ك'/g, "ڭ");
-            character = character.replace(/G/g, "ڭ");
-            character = character.replace(/ڭ'/g, "ك");
-            character = character.replace(/l/g, "ل");
-            character = character.replace(/m/g, "م");
-            character = character.replace(/n/g, "ن");
-            character = character.replace(/h/g, "ه");
-            character = character.replace(/ه'/g, "ة");
-            character = character.replace(/ة'/g, "ه");
-
-            character = character.replace(/w/g, "و");
-            character = character.replace(/y/g, "ي");
-            character = character.replace(/E/g, "ى");
-            character = character.replace(/ي'/g, "ى");
-            character = character.replace(/ى'/g, "ي");
-            character = character.replace(/a/g, "ا");
-            character = character.replace(/ا'/g, "آ");
-
-            character = character.replace(/e/g, "ء");
-            character = character.replace(/u/g, "ؤ");
-            character = character.replace(/i/g, "ئ");
-            character = character.replace(/I/g, "إ");
-            character = character.replace(/A/g, "أ");
-            character = character.replace(/U/g, "ٱ");
-
-            character = character.replace(/_/g, "ـ");
-            character = character.replace(/%/g, "٪");
-            character = character.replace(/\?/g, "؟");
-            character = character.replace(/\;/g, "؛");
-            character = character.replace(/\,/g, "،");
-
-            startPos = document.text.field.selectionStart;
-            endPos = document.text.field.selectionEnd;
-
-            beforeLen = document.text.field.value.length;
-            afterLen = character.length;
-            adjustment = afterLen - beforeLen;
-
-            document.text.field.value = character;
-
-            document.text.field.selectionStart = startPos + adjustment;
-            document.text.field.selectionEnd = endPos + adjustment;
-
-            var obj = document.text.field;
-            obj.focus();
-            obj.scrollTop = obj.scrollHeight;
-        }
-
-        function save() {
-            var text = document.getElementById("text").value;
-            text = text.replace(/\n/g, "\r\n");
-            var blob = new Blob([text], {
-                type: "text/plain"
-            });
-            var anchor = document.createElement("a");
-            anchor.download = "arabic_text.txt";
-            anchor.href = window.URL.createObjectURL(blob);
-            anchor.target = "_blank";
-            anchor.style.display = "none";
-            document.body.appendChild(anchor);
-            anchor.click();
-            document.body.removeChild(anchor);
-        }
-
-        var isVisible = "none";
-        window.addEventListener('keydown', function(e) {
-            if ((e.key == 'Escape')) {
-                isVisible = isVisible == "block" ? "none" : "block";
-                document.getElementById("keys").style.display = isVisible;
-            }
-        })
-    </script>
 </head>
 
-<body onload="text.field.focus()">
-    <form name="text">
-        <br>
-        <textarea name="field" id="text" onkeyup="convert()" rows="4" class="frame"></textarea>
-        <br><br>
-    </form>
+<body>
+    <textarea id="textarea" autofocus></textarea>
+    <div id="keyboard"></div>
 
-    <div id="keys">
-        <div class="key">a
-            <p><input type="button" class="button" onclick="alpha('ا')" value="ا"></p>
-        </div>
-        <div class="key">b
-            <p><input type="button" class="button" onclick="alpha('ب')" value="ب"></p>
-        </div>
-        <div class="key">t
-            <p><input type="button" class="button" onclick="alpha('ت')" value="ت"></p>
-        </div>
-        <div class="key">'t
-            <p><input type="button" class="button" onclick="alpha('ث')" value="ث"></p>
-        </div>
-        <div class="key">j
-            <p><input type="button" class="button" onclick="alpha('ج')" value="ج"></p>
-        </div>
-        <div class="key">H
-            <p><input type="button" class="button" onclick="alpha('ح')" value="ح"></p>
-        </div>
-        <div class="key">K
-            <p><input type="button" class="button" onclick="alpha('خ')" value="خ"></p>
-        </div>
-        <div class="key">d
-            <p><input type="button" class="button" onclick="alpha('د')" value="د"></p>
-        </div>
-        <div class="key">'d
-            <p><input type="button" class="button" onclick="alpha('ذ')" value="ذ"></p>
-        </div>
-        <div class="key">r
-            <p><input type="button" class="button" onclick="alpha('ر')" value="ر"></p>
-        </div>
-        <div class="key">z
-            <p><input type="button" class="button" onclick="alpha('ز')" value="ز"></p>
-        </div>
-        <div class="key">s
-            <p><input type="button" class="button" onclick="alpha('س')" value="س"></p>
-        </div>
-        <div class="key">'s
-            <p><input type="button" class="button" onclick="alpha('ش')" value="ش"></p>
-        </div>
-        <div class="key">S
-            <p><input type="button" class="button" onclick="alpha('ص')" value="ص"></p>
-        </div>
-        <div class="key">D
-            <p><input type="button" class="button" onclick="alpha('ض')" value="ض"></p>
-        </div>
-        <div class="key">T
-            <p><input type="button" class="button" onclick="alpha('ط')" value="ط"></p>
-        </div>
-        <div class="key">Z
-            <p><input type="button" class="button" onclick="alpha('ظ')" value="ظ"></p>
-        </div>
-        <div class="key">g
-            <p><input type="button" class="button" onclick="alpha('ع')" value="ع"></p>
-        </div>
-        <div class="key">R
-            <p><input type="button" class="button" onclick="alpha('غ')" value="غ"></p>
-        </div>
-        <div class="key">f
-            <p><input type="button" class="button" onclick="alpha('ف')" value="ف"></p>
-        </div>
-        <div class="key">q
-            <p><input type="button" class="button" onclick="alpha('ق')" value="ق"></p>
-        </div>
-        <br>
+    <script>
+        const typingMap = [
+            [/==a/g,"ً"],[/==i/g,"ٍ"],[/==u/g,"ٌ"],[/=a/g,"َ"],[/=i/g,"ِ"],[/=u/g,"ُ"],[/=w/g,"ّ"],[/=o/g,"ْ"],
+            [/ب'/g,"پ"],[/پ'/g,"ب"],[/ث'/g,"ت"],[/ت'/g,"ث"],[/ج'/g,"چ"],[/چ'/g,"ح"],[/ح'/g,"خ"],[/خ'/g,"ج"],
+            [/د'/g,"ذ"],[/ذ'/g,"د"],[/ر'/g,"ز"],[/ز'/g,"ر"],[/س'/g,"ش"],[/c/g,"ش"],[/ش'/g,"س"],[/ص'/g,"ض"],
+            [/ض'/g,"ص"],[/ط'/g,"ظ"],[/ظ'/g,"ط"],[/ع'/g,"غ"],[/غ'/g,"ع"],[/غ'/g,"ع"],[/ف'/g,"ق"],[/ڤ'/g,"ف"],
+            [/v/g,"ڤ"],[/ق'/g,"ڤ"],[/ك'/g,"ڭ"],[/ڭ'/g,"ك"],[/ه'/g,"ة"],[/ة'/g,"ه"],[/ي'/g,"ى"],[/ى'/g,"ي"],
+            [/ا'/g,"آ"],[/b/g,"ب"],[/p/g,"پ"],[/t/g,"ت"],[/j/g,"ج"],[/H/g,"ح"],[/K/g,"خ"],[/d/g,"د"],[/r/g,"ر"],
+            [/z/g,"ز"],[/s/g,"س"],[/S/g,"ص"],[/D/g,"ض"],[/T/g,"ط"],[/Z/g,"ظ"],[/g/g,"ع"],[/R/g,"غ"],[/f/g,"ف"],
+            [/q/g,"ق"],[/k/g,"ك"],[/G/g,"ڭ"],[/l/g,"ل"],[/m/g,"م"],[/n/g,"ن"],[/h/g,"ه"],[/w/g,"و"],[/y/g,"ي"],
+            [/E/g,"ى"],[/a/g,"ا"],[/e/g,"ء"],[/u/g,"ؤ"],[/i/g,"ئ"],[/I/g,"إ"],[/A/g,"أ"],[/U/g,"ٱ"],[/_/g,"ـ"],
+            [/%/g,"٪"],[/\?/g,"؟"],[/;/g,"؛"],[/,/g,"،"]
+        ];
 
-        <div class="key">k
-            <p><input type="button" class="button" onclick="alpha('ك')" value="ك"></p>
-        </div>
-        <div class="key">l
-            <p><input type="button" class="button" onclick="alpha('ل')" value="ل"></p>
-        </div>
-        <div class="key">m
-            <p><input type="button" class="button" onclick="alpha('م')" value="م"></p>
-        </div>
-        <div class="key">n
-            <p><input type="button" class="button" onclick="alpha('ن')" value="ن"></p>
-        </div>
-        <div class="key">h
-            <p><input type="button" class="button" onclick="alpha('ه')" value="ه"></p>
-        </div>
-        <div class="key">w
-            <p><input type="button" class="button" onclick="alpha('و')" value="و"></p>
-        </div>
-        <div class="key">y
-            <p><input type="button" class="button" onclick="alpha('ي')" value="ي"></p>
-        </div>
-        <div class="key">e
-            <p><input type="button" class="button" onclick="alpha('ء')" value="ء"></p>
-        </div>
-        <div class="key">E
-            <p><input type="button" class="button" onclick="alpha('ى')" value="ى"></p>
-        </div>
-        <div class="key">i
-            <p><input type="button" class="button" onclick="alpha('ئ')" value="ئ"></p>
-        </div>
-        <div class="key">u
-            <p><input type="button" class="button" onclick="alpha('ؤ')" value="ؤ"></p>
-        </div>
-        <div class="key">'h
-            <p><input type="button" class="button" onclick="alpha('ة')" value="ة"></p>
-        </div>
-        <div class="key">I
-            <p><input type="button" class="button" onclick="alpha('إ')" value="إ"></p>
-        </div>
-        <div class="key">A
-            <p><input type="button" class="button" onclick="alpha('أ')" value="أ"></p>
-        </div>
-        <div class="key">U
-            <p><input type="button" class="button" onclick="alpha('ٱ')" value="ٱ"></p>
-        </div>
-        <div class="key">'a
-            <p><input type="button" class="button" onclick="alpha('آ')" value="آ"></p>
-        </div>
-        <span class="tab"></span>
-        <div class="key">
-            <p><input type="button" class="button-small" onclick="alpha('َ')" value="َ&nbsp;"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button-small" onclick="alpha('ً')" value="ً&nbsp;"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button-small" onclick="alpha('ُ')" value="ُ&nbsp;"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button-small" onclick="alpha('ٌ')" value="ٌ&nbsp;"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button-small" onclick="alpha('ّ')" value="ّ&nbsp;"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button-small" onclick="alpha('ْ')" value="ْ&nbsp;"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button-small" onclick="alpha('ِ')" value="ِ&nbsp;"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button-small" onclick="alpha('ٍ')" value="ٍ&nbsp;"></p>
-        </div>
-        <br>
+        const buttonMap = [
+            [
+                {l:"a",v:"ا"},{l:"b",v:"ب"},{l:"t",v:"ت"},{l:"'t",v:"ث"},{l:"j",v:"ج"},{l:"H",v:"ح"},{l:"K",v:"خ"},
+                {l:"d",v:"د"},{l:"'d",v:"ذ"},{l:"r",v:"ر"},{l:"z",v:"ز"},{l:"s",v:"س"},{l:"c",v:"ش"},{l:"S",v:"ص"},
+                {l:"D",v:"ض"},{l:"T",v:"ط"},{l:"Z",v:"ظ"},{l:"g",v:"ع"},{l:"R",v:"غ"}
+            ],
+            [
+                {l:"f",v:"ف"},{l:"q",v:"ق"},{l:"k",v:"ك"},{l:"l",v:"ل"},{l:"m",v:"م"},{l:"n",v:"ن"},{l:"h",v:"ه"},
+                {l:"w",v:"و"},{l:"y",v:"ي"},{l:"e",v:"ء"},{l:"E",v:"ى"},{l:"i",v:"ئ"},{l:"u",v:"ؤ"},{l:"'h",v:"ة"},
+                {l:"I",v:"إ"},{l:"A",v:"أ"},{l:"U",v:"ٱ"},{l:"'a",v:"آ"}
+            ],
+            [
+                {v:"َ",small:1},{v:"ً",small:1},{v:"ُ",small:1},{v:"ٌ",small:1},{v:"ّ",small:1},{v:"ْ",small:1},
+                {v:"ِ",small:1},{v:"ٍ",small:1},{l:"0",v:"٠"},{l:"1",v:"١"},{l:"2",v:"٢"},{l:"3",v:"٣"},{l:"4",v:"٤"},
+                {l:"5",v:"٥"},{l:"6",v:"٦"},{l:"7",v:"٧"},{l:"8",v:"٨"},{l:"9",v:"٩"}
+            ],
+            [
+                {l:"?",v:"؟"},{l:"!",v:"!"},{l:";",v:"؛"},{l:",",v:"،"},{l:".",v:"."},{l:"-",v:"ـ"},{v:" "}
+            ]
+        ];
 
-        <div class="key">?
-            <p><input type="button" class="button" onclick="alpha('؟')" value="؟"></p>
-        </div>
-        <div class="key">!
-            <p><input type="button" class="button" onclick="alpha('!')" value="!"></p>
-        </div>
-        <div class="key">;
-            <p><input type="button" class="button" onclick="alpha('؛')" value="؛"></p>
-        </div>
-        <div class="key">,
-            <p><input type="button" class="button" onclick="alpha('،')" value="،"></p>
-        </div>
-        <div class="key">.
-            <p><input type="button" class="button" onclick="alpha('.')" value="."></p>
-        </div>
-        <div class="key">-
-            <p><input type="button" class="button" onclick="alpha('ـ')" value="ـ"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button" onclick="alpha(' ')" value=" "></p>
-        </div>
-        <span class="tab"></span>
-        <div class="key">0
-            <p><input type="button" class="button" onclick="alpha('٠')" value="٠"></p>
-        </div>
-        <div class="key">1
-            <p><input type="button" class="button" onclick="alpha('١')" value="١"></p>
-        </div>
-        <div class="key">2
-            <p><input type="button" class="button" onclick="alpha('٢')" value="٢"></p>
-        </div>
-        <div class="key">3
-            <p><input type="button" class="button" onclick="alpha('٣')" value="٣"></p>
-        </div>
-        <div class="key">4
-            <p><input type="button" class="button" onclick="alpha('٤')" value="٤"></p>
-        </div>
-        <div class="key">5
-            <p><input type="button" class="button" onclick="alpha('٥')" value="٥"></p>
-        </div>
-        <div class="key">6
-            <p><input type="button" class="button" onclick="alpha('٦')" value="٦"></p>
-        </div>
-        <div class="key">7
-            <p><input type="button" class="button" onclick="alpha('٧')" value="٧"></p>
-        </div>
-        <div class="key">8
-            <p><input type="button" class="button" onclick="alpha('٨')" value="٨"></p>
-        </div>
-        <div class="key">9
-            <p><input type="button" class="button" onclick="alpha('٩')" value="٩"></p>
-        </div>
-        <div class="key">
-            <p><input type="button" class="button" onclick="alpha('٬')" value="٬"></p>
-        </div>
-        <div class="key">%
-            <p><input type="button" class="button" onclick="alpha('٪')" value="٪"></p>
-        </div>
-        <span class="tab"></span>
-        <div class="key">
-            <p><input type="button" class="button" onclick="save()" value="..."></p>
-        </div>
-    </div>
+        const textarea = document.getElementById('textarea');
+        textarea.addEventListener('input', (e) => {
+            const caret = textarea.selectionStart;
+            let value = textarea.value;
+            for (const [pattern, replacement] of typingMap) {
+                value = value.replace(pattern, replacement);
+            }
+            textarea.value = value;
+            textarea.setSelectionRange(caret, caret);
+        });
 
+        function keyClick(char) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
+            textarea.value = value.slice(0, start) + char + value.slice(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + char.length, start + char.length);
+            textarea.dispatchEvent(new Event('input'));
+        }
+
+        function saveFile() {
+            const fileName = prompt('File Name :', 'arabic_text');
+            if (!fileName) return;
+            const fileContent = new Blob([textarea.value], { type: "text/plain;charset=utf-8" });
+
+            const linkURL = URL.createObjectURL(fileContent);
+            const linkObject = document.createElement('a');
+            linkObject.href = linkURL;
+            linkObject.download = fileName + '.txt';
+            document.body.appendChild(linkObject);
+            linkObject.click();
+
+            setTimeout(() => {
+                document.body.removeChild(linkObject);
+                URL.revokeObjectURL(linkURL);
+            }, 0);
+        }
+
+        const keyboard = document.getElementById('keyboard');
+        buttonMap.forEach((row) => {
+            keyboard.innerHTML += `<div class="break"></div>`;
+            row.forEach((key) => {
+                key.small
+                    ? keyboard.innerHTML += `<span class="key"><button class="button button-small" onclick="keyClick('${key.v}')">&nbsp;${key.v}</button></span>`
+                    : keyboard.innerHTML += `<span class="key"><div>${key.l || ''}</div><button class="button" onclick="keyClick('${key.v}')">${key.v}</button></span>`;
+            });
+        });
+        keyboard.innerHTML += `<span class="key" style="margin-right:30px"><div>&nbsp;</div><button class="button" onclick="saveFile()">...</button></span>`;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                keyboard.style.display = keyboard.style.display === 'none' ? 'flex' : 'none';
+            }
+        });
+    </script>
 </body>
 
 </html>
