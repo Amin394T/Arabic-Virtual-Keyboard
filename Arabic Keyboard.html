@@ -122,13 +122,15 @@
         });
 
         function keyClick(char) {
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const value = textarea.value;
-            textarea.value = value.slice(0, start) + char + value.slice(end);
-            textarea.focus();
-            textarea.setSelectionRange(start + char.length, start + char.length);
-            textarea.dispatchEvent(new Event('input'));
+            let value = textarea.value;
+            let caret = textarea.selectionStart;
+            caret = value[caret - 1] == "'" || ["=", "+"].includes(value[caret - 2]) ? caret - 1 : caret;
+            
+            for (const [pattern, replacement] of typingMap) {
+                value = value.replace(pattern, replacement);
+            }
+            textarea.value = value;
+            textarea.setSelectionRange(caret, caret);
         }
 
         function saveFile() {
