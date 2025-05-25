@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Arabic Virtual Keyboard</title>
+    <style>
+    body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: Cairo, sans-serif;
+        direction: rtl;
+        background: #1E1E1E;
+    }
+
+    textarea {
+        width: 90%;
+        height: 85vh;
+        padding: 15px;
+        margin-top: 25px;
+        font-size: 20px;
+        font-weight: 600;
+        font-family: inherit;
+        direction: rtl;
+        color: #eaeaea;
+        border: 6px solid #444;
+        border-radius: 8px;
+        outline: none;
+        background-color: #707070;
+    }
+
+    #keyboard {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: end;
+        margin: 30px 5vw;
+    }
+
+    #keyboard .break {
+        flex-basis: 100%;
+    }
+
+    .key {
+        text-align: center;
+        color: #eaeaea;
+    }
+
+    .key > .button,
+    .key > .button-small {
+        font-size: 20px;
+        font-family: inherit;
+        color: inherit;
+        font-weight: bold;
+        border: 2px solid #444;
+        border-radius: 5px;
+        background: #707070;
+        cursor: pointer;
+        width: 40px;
+        height: 50px;
+        margin-inline: 5px;
+    }
+
+    .key > .button-small {
+        font-size: 25px;
+        width: 25px;
+    }   
+    </style>
+</head>
+
+<body>
+    <textarea id="textarea" autofocus></textarea>
+    <div id="keyboard" style="display:none;"></div>
+
+    <script>
+        const typingMap = [
+            [/\+a/g,"ً"],[/\+i/g,"ٍ"],[/\+u/g,"ٌ"],[/=a/g,"َ"],[/=i/g,"ِ"],[/=u/g,"ُ"],[/=w/g,"ّ"],[/=o/g,"ْ"],
+            [/ب'/g,"پ"],[/پ'/g,"ب"],[/ث'/g,"ت"],[/ت'/g,"ث"],[/ج'/g,"چ"],[/چ'/g,"ح"],[/ح'/g,"خ"],[/خ'/g,"ج"],
+            [/د'/g,"ذ"],[/ذ'/g,"د"],[/ر'/g,"ز"],[/ز'/g,"ر"],[/س'/g,"ش"],[/c/g,"ش"],[/ش'/g,"س"],[/ص'/g,"ض"],
+            [/ض'/g,"ص"],[/ط'/g,"ظ"],[/ظ'/g,"ط"],[/ع'/g,"غ"],[/غ'/g,"ع"],[/غ'/g,"ع"],[/ف'/g,"ق"],[/ڤ'/g,"ف"],
+            [/v/g,"ڤ"],[/ق'/g,"ڤ"],[/ك'/g,"ڭ"],[/ڭ'/g,"ك"],[/ه'/g,"ة"],[/ة'/g,"ه"],[/ي'/g,"ى"],[/ى'/g,"ي"],
+            [/ا'/g,"آ"],[/b/g,"ب"],[/p/g,"پ"],[/t/g,"ت"],[/j/g,"ج"],[/H/g,"ح"],[/K/g,"خ"],[/d/g,"د"],[/r/g,"ر"],
+            [/z/g,"ز"],[/s/g,"س"],[/S/g,"ص"],[/D/g,"ض"],[/T/g,"ط"],[/Z/g,"ظ"],[/g/g,"ع"],[/R/g,"غ"],[/f/g,"ف"],
+            [/q/g,"ق"],[/k/g,"ك"],[/G/g,"ڭ"],[/l/g,"ل"],[/m/g,"م"],[/n/g,"ن"],[/h/g,"ه"],[/w/g,"و"],[/y/g,"ي"],
+            [/E/g,"ى"],[/a/g,"ا"],[/e/g,"ء"],[/u/g,"ؤ"],[/i/g,"ئ"],[/I/g,"إ"],[/A/g,"أ"],[/U/g,"ٱ"],[/_/g,"ـ"],
+            [/%/g,"٪"],[/\?/g,"؟"],[/;/g,"؛"],[/,/g,"،"]
+        ];
+
+        const buttonMap = [
+            [
+                {l:"a",v:"ا"},{l:"b",v:"ب"},{l:"t",v:"ت"},{l:"'t",v:"ث"},{l:"j",v:"ج"},{l:"H",v:"ح"},{l:"K",v:"خ"},
+                {l:"d",v:"د"},{l:"'d",v:"ذ"},{l:"r",v:"ر"},{l:"z",v:"ز"},{l:"s",v:"س"},{l:"c",v:"ش"},{l:"S",v:"ص"},
+                {l:"D",v:"ض"},{l:"T",v:"ط"},{l:"Z",v:"ظ"},{l:"g",v:"ع"},{l:"R",v:"غ"}
+            ],
+            [
+                {l:"f",v:"ف"},{l:"q",v:"ق"},{l:"k",v:"ك"},{l:"l",v:"ل"},{l:"m",v:"م"},{l:"n",v:"ن"},{l:"h",v:"ه"},
+                {l:"w",v:"و"},{l:"y",v:"ي"},{l:"e",v:"ء"},{l:"E",v:"ى"},{l:"i",v:"ئ"},{l:"u",v:"ؤ"},{l:"'h",v:"ة"},
+                {l:"I",v:"إ"},{l:"A",v:"أ"},{l:"U",v:"ٱ"},{l:"'a",v:"آ"}
+            ],
+            [
+                {v:"َ",small:1},{v:"ً",small:1},{v:"ُ",small:1},{v:"ٌ",small:1},{v:"ّ",small:1},{v:"ْ",small:1},
+                {v:"ِ",small:1},{v:"ٍ",small:1},{l:"0",v:"٠"},{l:"1",v:"١"},{l:"2",v:"٢"},{l:"3",v:"٣"},{l:"4",v:"٤"},
+                {l:"5",v:"٥"},{l:"6",v:"٦"},{l:"7",v:"٧"},{l:"8",v:"٨"},{l:"9",v:"٩"}
+            ],
+            [
+                {l:"?",v:"؟"},{l:"!",v:"!"},{l:";",v:"؛"},{l:",",v:"،"},{l:".",v:"."},{l:"-",v:"ـ"},{v:" "}
+            ]
+        ];
+
+        const textarea = document.getElementById('textarea');
+        textarea.addEventListener('input', () => {
+            let value = textarea.value;
+            let caret = textarea.selectionStart;
+            caret = value[caret - 1] == "'" || ["=", "+"].includes(value[caret - 2]) ? caret - 1 : caret;
+            
+            for (const [pattern, replacement] of typingMap) {
+                value = value.replace(pattern, replacement);
+            }
+            textarea.value = value;
+            textarea.setSelectionRange(caret, caret);
+        });
+
+        function keyClick(char) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
+            textarea.value = value.slice(0, start) + char + value.slice(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + char.length, start + char.length);
+            //textarea.dispatchEvent(new Event('input'));
+        }
+
+        function saveFile() {
+            const fileContent = new Blob([textarea.value], { type: "text/plain;charset=utf-8" });
+
+            const linkURL = URL.createObjectURL(fileContent);
+            const linkObject = document.createElement('a');
+            linkObject.href = linkURL;
+            linkObject.download = 'arabic_text.txt';
+            document.body.appendChild(linkObject);
+            linkObject.click();
+
+            setTimeout(() => {
+                document.body.removeChild(linkObject);
+                URL.revokeObjectURL(linkURL);
+            }, 0);
+        }
+
+        const keyboard = document.getElementById('keyboard');
+        buttonMap.forEach((row) => {
+            keyboard.innerHTML += `<div class="break"></div>`;
+            row.forEach((key) => {
+                key.small
+                    ? keyboard.innerHTML += `<span class="key"><button class="button button-small" onclick="keyClick('${key.v}')">&nbsp;${key.v}</button></span>`
+                    : keyboard.innerHTML += `<span class="key"><div>${key.l || ''}</div><button class="button" onclick="keyClick('${key.v}')">${key.v}</button></span>`;
+            });
+        });
+        keyboard.innerHTML += `<span class="key" style="margin-right:30px"><div>&nbsp;</div><button class="button" onclick="saveFile()">...</button></span>`;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                keyboard.style.display = keyboard.style.display === 'none' ? 'flex' : 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
