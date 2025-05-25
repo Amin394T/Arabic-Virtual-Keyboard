@@ -77,7 +77,7 @@
 
     <script>
         const typingMap = [
-            [/==a/g,"ً"],[/==i/g,"ٍ"],[/==u/g,"ٌ"],[/=a/g,"َ"],[/=i/g,"ِ"],[/=u/g,"ُ"],[/=w/g,"ّ"],[/=o/g,"ْ"],
+            [/\+a/g,"ً"],[/\+i/g,"ٍ"],[/\+u/g,"ٌ"],[/=a/g,"َ"],[/=i/g,"ِ"],[/=u/g,"ُ"],[/=w/g,"ّ"],[/=o/g,"ْ"],
             [/ب'/g,"پ"],[/پ'/g,"ب"],[/ث'/g,"ت"],[/ت'/g,"ث"],[/ج'/g,"چ"],[/چ'/g,"ح"],[/ح'/g,"خ"],[/خ'/g,"ج"],
             [/د'/g,"ذ"],[/ذ'/g,"د"],[/ر'/g,"ز"],[/ز'/g,"ر"],[/س'/g,"ش"],[/c/g,"ش"],[/ش'/g,"س"],[/ص'/g,"ض"],
             [/ض'/g,"ص"],[/ط'/g,"ظ"],[/ظ'/g,"ط"],[/ع'/g,"غ"],[/غ'/g,"ع"],[/غ'/g,"ع"],[/ف'/g,"ق"],[/ڤ'/g,"ف"],
@@ -111,17 +111,7 @@
         ];
 
         const textarea = document.getElementById('textarea');
-        textarea.addEventListener('input', (e) => {
-            const caret = textarea.selectionStart;
-            let value = textarea.value;
-            for (const [pattern, replacement] of typingMap) {
-                value = value.replace(pattern, replacement);
-            }
-            textarea.value = value;
-            textarea.setSelectionRange(caret, caret);
-        });
-
-        function keyClick(char) {
+        textarea.addEventListener('input', () => {
             let value = textarea.value;
             let caret = textarea.selectionStart;
             caret = value[caret - 1] == "'" || ["=", "+"].includes(value[caret - 2]) ? caret - 1 : caret;
@@ -131,6 +121,16 @@
             }
             textarea.value = value;
             textarea.setSelectionRange(caret, caret);
+        });
+
+        function keyClick(char) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
+            textarea.value = value.slice(0, start) + char + value.slice(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + char.length, start + char.length);
+            textarea.dispatchEvent(new Event('input'));
         }
 
         function saveFile() {
